@@ -26,21 +26,59 @@ public class RegisterServlet extends HttpServlet {
         Gson gson = new Gson();
         RegisterRequest registerRequest = gson.fromJson(request.getReader(), RegisterRequest.class);
         
+        java.util.Map<String, Object> responseMap = new java.util.HashMap<>();
+        
         try (Connection conn = DatabaseConnection.getConnection()) {
+            System.out.println("=== REGISTRATION ATTEMPT ===");
+            System.out.println("Email: " + registerRequest.getEmail());
+            
+            // Check if user already exists
+            String checkSql = "SELECT COUNT(*) FROM users WHERE email = ?";
+            PreparedStatement checkStmt = conn.prepareStatement(checkSql);
+            checkStmt.setString(1, registerRequest.getEmail());
+            java.sql.ResultSet rs = checkStmt.executeQuery();
+            
+            if (rs.next() && rs.getInt(1) > 0) {
+                System.out.println("User already exists!");
+                responseMap.put("success", false);
+                responseMap.put("message", "Email already registered");
+                response.setStatus(HttpServletResponse.SC_OK);
+                response.getWriter().write(gson.toJson(responseMap));
+                return;
+            }
+            
+            // Hash password and insert new user
             String hashedPassword = BCrypt.hashpw(registerRequest.getPassword(), BCrypt.gensalt());
+            System.out.println("Password hashed successfully");
             
             String sql = "INSERT INTO users (email, password) VALUES (?, ?)";
             PreparedStatement stmt = conn.prepareStatement(sql);
             stmt.setString(1, registerRequest.getEmail());
             stmt.setString(2, hashedPassword);
             
-            stmt.executeUpdate();
+            int rowsAffected = stmt.executeUpdate();
             
-            response.setStatus(HttpServletResponse.SC_CREATED);
-            response.getWriter().write("{\"message\":\"User registered successfully\"}");
+            if (rowsAffected > 0) {
+                System.out.println("User registered successfully!");
+                responseMap.put("success", true);
+                responseMap.put("message", "User registered successfully");
+                responseMap.put("email", registerRequest.getEmail());
+                response.setStatus(HttpServletResponse.SC_OK);
+            } else {
+                System.err.println("Failed to insert user");
+                responseMap.put("success", false);
+                responseMap.put("message", "Failed to register user");
+                response.setStatus(HttpServletResponse.SC_OK);
+            }
+            
+            response.getWriter().write(gson.toJson(responseMap));
         } catch (Exception e) {
-            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-            response.getWriter().write("{\"error\":\"" + e.getMessage() + "\"}");
+            System.err.println("Registration error: " + e.getMessage());
+            e.printStackTrace();
+            responseMap.put("success", false);
+            responseMap.put("message", "Server error: " + e.getMessage());
+            response.setStatus(HttpServletResponse.SC_OK);
+            response.getWriter().write(gson.toJson(responseMap));
         }
     }
     

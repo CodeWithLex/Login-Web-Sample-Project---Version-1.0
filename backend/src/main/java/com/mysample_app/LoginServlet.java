@@ -1,6 +1,5 @@
 package com.mysample_app;
 
-import com.mysample_app.models.User;
 import com.google.gson.Gson;
 import org.mindrot.jbcrypt.BCrypt;
 

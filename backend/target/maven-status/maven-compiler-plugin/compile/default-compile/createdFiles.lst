@@ -1,6 +1,0 @@
-com\mysample_app\LoginServlet.class
-com\mysample_app\models\User.class
-com\mysample_app\LoginRequest.class
-com\mysample_app\RegisterServlet.class
-com\mysample_app\RegisterRequest.class
-com\mysample_app\DatabaseConnection.class
