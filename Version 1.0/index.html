@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Sample Login Form</title>
+    <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+    <main class="card" role="main">
+        <h1>Sign in to your account</h1>
+        <p class="lead">Enter your email and password to continue</p>
+
+        <form id="loginForm" novalidate>
+            <div>
+                <label for="email">Email</label>
+                <div class="input" aria-hidden="false">
+                    <input id="email" name="email" type="email" autocomplete="email" placeholder="you@example.com" required />
+                </div>
+                <div id="emailError" class="error" aria-live="polite"></div>
+            </div>
+
+            <div>
+                <label for="password">Password</label>
+                <div class="input-password">
+                    <input id="password" name="password" type="password" autocomplete="current-password" placeholder="••••••••" minlength="6" required />
+                    <button type="button" id="togglePwd" class="pw-toggle" aria-pressed="false" title="Show password">Show</button>
+                </div>
+                <div id="passwordError" class="error" aria-live="polite"></div>
+            </div>
+
+            <div class="row">
+                <label class="checkbox">
+                    <input id="remember" name="remember" type="checkbox" />
+                    <span>Remember me</span>
+                </label>
+                <button type="button" class="secondary" id="forgot">Forgot?</button>
+            </div>
+
+            <div>
+                <button type="submit" class="primary">Sign in</button>
+            </div>
+
+            <div class="text-center muted">
+                New here? <button type="button" class="secondary" id="create">Create account</button>
+            </div>
+
+            <div id="result" class="helper" aria-live="polite"></div>
+        </form>
+    </main>
+
+    <script>
+        // Basic client-side validation and interactions.
+        const form = document.getElementById('loginForm');
+        const email = document.getElementById('email');
+        let pwd = document.getElementById('password');
+        const emailError = document.getElementById('emailError');
+        const pwdError = document.getElementById('passwordError');
+        const result = document.getElementById('result');
+        const toggle = document.getElementById('togglePwd');
+
+        // Toggle password visibility while preserving caret position and focus to avoid layout/caret glitches.
+        toggle.addEventListener('click', () => {
+            // remember whether the input had focus and selection range
+            const hadFocus = document.activeElement === pwd;
+            let selStart = pwd.selectionStart;
+            let selEnd = pwd.selectionEnd;
+
+            const isHidden = pwd.type === 'password';
+            pwd.type = isHidden ? 'text' : 'password';
+
+            // restore focus and selection on next tick to ensure browser has updated
+            if (hadFocus) {
+                // Use requestAnimationFrame to ensure the type change has been processed
+                requestAnimationFrame(() => {
+                    pwd.focus();
+                    pwd.setSelectionRange(selStart, selEnd);
+                });
+            }
+
+            // update the toggle UI
+            toggle.textContent = isHidden ? 'Hide' : 'Show';
+            toggle.setAttribute('aria-pressed', String(isHidden));
+            toggle.title = isHidden ? 'Hide password' : 'Show password';
+        });
+
+        function validateEmailField() {
+            if (!email.checkValidity()) {
+                if (email.value.trim() === '') {
+                    emailError.textContent = 'Email is required.';
+                } else {
+                    emailError.textContent = 'Please enter a valid email address.';
+                }
+                return false;
+            }
+            emailError.textContent = '';
+            return true;
+        }
+
+        function validatePasswordField() {
+            if (!pwd.checkValidity()) {
+                if (pwd.value.trim() === '') {
+                    pwdError.textContent = 'Password is required.';
+                } else {
+                    pwdError.textContent = 'Password must be at least 6 characters.';
+                }
+                return false;
+            }
+            pwdError.textContent = '';
+            return true;
+        }
+
+        email.addEventListener('input', () => { emailError.textContent = ''; result.textContent = ''; });
+        pwd.addEventListener('input', () => { pwdError.textContent = ''; result.textContent = ''; });
+
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            result.textContent = '';
+            const okEmail = validateEmailField();
+            const okPwd = validatePasswordField();
+            if (!okEmail || !okPwd) {
+                result.textContent = 'Please fix the errors above and try again.';
+                return;
+            }
+
+            // Simulate a login action (replace with real request in production)
+            const data = {
+                email: email.value.trim(),
+                remember: document.getElementById('remember').checked
+            };
+            // Fake delay
+            result.textContent = 'Signing in...';
+            setTimeout(() => {
+                result.textContent = `Signed in as ${data.email}. (Demo only — no server communication)`;
+            }, 800);
+        });
+
+        // Optional helpers for UI buttons
+        document.getElementById('forgot').addEventListener('click', () => {
+            alert('Forgot password flow is not implemented in this sample.');
+        });
+        document.getElementById('create').addEventListener('click', () => {
+            alert('Create account flow is not implemented in this sample.');
+        });
+    </script>
+</body>
+</html>
