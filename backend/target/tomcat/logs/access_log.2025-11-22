@@ -182,3 +182,9 @@
 0:0:0:0:0:0:0:1 - - [22/Nov/2025:22:18:21 +0800] "POST /login-backend/api/login HTTP/1.1" 200 72 http-bio-8081-exec-3 90
 0:0:0:0:0:0:0:1 - - [22/Nov/2025:22:19:10 +0800] "OPTIONS /login-backend/api/login HTTP/1.1" 200 - http-bio-8081-exec-1 1
 0:0:0:0:0:0:0:1 - - [22/Nov/2025:22:19:11 +0800] "POST /login-backend/api/login HTTP/1.1" 200 72 http-bio-8081-exec-1 72
+0:0:0:0:0:0:0:1 - - [22/Nov/2025:22:26:55 +0800] "OPTIONS /login-backend/api/register HTTP/1.1" 200 - http-bio-8081-exec-6 3
+0:0:0:0:0:0:0:1 - - [22/Nov/2025:22:26:55 +0800] "POST /login-backend/api/register HTTP/1.1" 201 42 http-bio-8081-exec-6 101
+0:0:0:0:0:0:0:1 - - [22/Nov/2025:22:27:07 +0800] "OPTIONS /login-backend/api/login HTTP/1.1" 200 - http-bio-8081-exec-6 0
+0:0:0:0:0:0:0:1 - - [22/Nov/2025:22:27:07 +0800] "POST /login-backend/api/login HTTP/1.1" 200 78 http-bio-8081-exec-6 91
+0:0:0:0:0:0:0:1 - - [22/Nov/2025:22:29:47 +0800] "OPTIONS /login-backend/api/register HTTP/1.1" 200 - http-bio-8081-exec-2 1
+0:0:0:0:0:0:0:1 - - [22/Nov/2025:22:29:47 +0800] "POST /login-backend/api/register HTTP/1.1" 201 42 http-bio-8081-exec-2 77

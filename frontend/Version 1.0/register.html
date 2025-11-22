@@ -3,17 +3,17 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <title>Sample Login Form</title>
+    <title>Create Account - Sample Project</title>
     <link rel="stylesheet" href="css/base.css" />
     <link rel="stylesheet" href="css/form.css" />
 </head>
 <body>
     <div class="bg-text">My Sample Project - Testing Database</div>
     <main class="card" role="main"> 
-        <h1>Sign in to your account</h1>
-        <p class="lead">Enter your email and password to continue</p>
+        <h1>Create your account</h1>
+        <p class="lead">Enter your details to get started</p>
 
-        <form id="loginForm" novalidate>
+        <form id="registerForm" novalidate>
             <div>
                 <label for="email">Email</label>
                 <div class="input">
@@ -31,33 +31,38 @@
                 <div id="passwordError" class="error"></div>
             </div>
 
-            <div class="row">
-                <label class="checkbox">
-                    <input type="checkbox" id="remember" />
-                    <span>Remember me</span>
-                </label>
-                <button type="button" class="secondary">Forgot?</button>
+            <div>
+                <label for="confirmPassword">Confirm Password</label>
+                <div class="input-password">
+                    <input type="password" id="confirmPassword" placeholder="Confirm your password" required />
+                    <button type="button" class="pw-toggle" id="toggleConfirmPwd" title="Show password">Show</button>
+                </div>
+                <div id="confirmPasswordError" class="error"></div>
             </div>
 
-            <button type="submit" class="primary">Sign in</button>
+            <button type="submit" class="primary">Create Account</button>
             <div id="result" class="helper"></div>
         </form>
 
         <p class="text-center muted">
-            New here? <button type="button" class="secondary" onclick="window.location.href='register.html'">Create account</button>
+            Already have an account? <button type="button" class="secondary" onclick="window.location.href='index.html'">Sign in</button>
         </p>
     </main>
 
     <script>
-        const form = document.getElementById('loginForm');
+        const form = document.getElementById('registerForm');
         const email = document.getElementById('email');
         let pwd = document.getElementById('password');
+        let confirmPwd = document.getElementById('confirmPassword');
         const emailError = document.getElementById('emailError');
         const pwdError = document.getElementById('passwordError');
+        const confirmPwdError = document.getElementById('confirmPasswordError');
         const result = document.getElementById('result');
         const toggle = document.getElementById('togglePwd');
+        const toggleConfirm = document.getElementById('toggleConfirmPwd');
 
         let isHidden = true;
+        let isConfirmHidden = true;
 
         // Toggle password visibility
         toggle.addEventListener('click', () => {
@@ -80,6 +85,42 @@
             isHidden = !isHidden;
             toggle.textContent = isHidden ? 'Show' : 'Hide';
             toggle.title = isHidden ? 'Show password' : 'Hide password';
+
+            // Re-attach event listeners
+            pwd.addEventListener('input', () => { 
+                pwdError.textContent = ''; 
+                confirmPwdError.textContent = ''; 
+                result.textContent = ''; 
+            });
+        });
+
+        // Toggle confirm password visibility
+        toggleConfirm.addEventListener('click', () => {
+            const start = confirmPwd.selectionStart;
+            const end = confirmPwd.selectionEnd;
+            const newType = isConfirmHidden ? 'text' : 'password';
+            
+            const newInput = document.createElement('input');
+            newInput.type = newType;
+            newInput.id = 'confirmPassword';
+            newInput.placeholder = 'Confirm your password';
+            newInput.value = confirmPwd.value;
+            newInput.required = true;
+            
+            confirmPwd.parentNode.replaceChild(newInput, confirmPwd);
+            confirmPwd = newInput;
+            confirmPwd.setSelectionRange(start, end);
+            confirmPwd.focus();
+            
+            isConfirmHidden = !isConfirmHidden;
+            toggleConfirm.textContent = isConfirmHidden ? 'Show' : 'Hide';
+            toggleConfirm.title = isConfirmHidden ? 'Show password' : 'Hide password';
+
+            // Re-attach event listeners
+            confirmPwd.addEventListener('input', () => { 
+                confirmPwdError.textContent = ''; 
+                result.textContent = ''; 
+            });
         });
 
         function validateEmailField() {
@@ -111,6 +152,20 @@
             return true;
         }
 
+        function validateConfirmPasswordField() {
+            const val = confirmPwd.value;
+            if (!val) {
+                confirmPwdError.textContent = 'Please confirm your password.';
+                return false;
+            }
+            if (val !== pwd.value) {
+                confirmPwdError.textContent = 'Passwords do not match.';
+                return false;
+            }
+            confirmPwdError.textContent = '';
+            return true;
+        }
+
         email.addEventListener('input', () => { 
             emailError.textContent = ''; 
             result.textContent = ''; 
@@ -118,6 +173,12 @@
         
         pwd.addEventListener('input', () => { 
             pwdError.textContent = ''; 
+            confirmPwdError.textContent = ''; 
+            result.textContent = ''; 
+        });
+
+        confirmPwd.addEventListener('input', () => { 
+            confirmPwdError.textContent = ''; 
             result.textContent = ''; 
         });
 
@@ -127,8 +188,9 @@
             
             const okEmail = validateEmailField();
             const okPwd = validatePasswordField();
+            const okConfirmPwd = validateConfirmPasswordField();
             
-            if (!okEmail || !okPwd) {
+            if (!okEmail || !okPwd || !okConfirmPwd) {
                 result.textContent = 'Please fix the errors above.';
                 result.style.color = 'red';
                 return;
@@ -136,15 +198,14 @@
 
             const data = {
                 email: email.value.trim(),
-                password: pwd.value,
-                remember: document.getElementById('remember').checked
+                password: pwd.value
             };
 
-            result.textContent = 'Signing in...';
+            result.textContent = 'Creating your account...';
             result.style.color = '#64748b';
 
             try {
-                const response = await fetch('http://localhost:8081/login-backend/api/login', {
+                const response = await fetch('http://localhost:8081/login-backend/api/register', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -155,13 +216,13 @@
                 const responseData = await response.json();
 
                 if (responseData.success) {
-                    result.textContent = `Welcome, ${responseData.email}!`;
+                    result.textContent = 'Account created successfully! Redirecting to login...';
                     result.style.color = 'green';
                     
-                    // Redirect to dashboard
+                    // Redirect to login page
                     setTimeout(() => {
-                        window.location.href = `dashboard.html?email=${encodeURIComponent(responseData.email)}`;
-                    }, 1000);
+                        window.location.href = 'index.html';
+                    }, 2000);
                 } else {
                     result.textContent = responseData.message;
                     result.style.color = 'red';
