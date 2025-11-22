@@ -375,9 +375,107 @@ button.secondary:hover {
     color: #1d4ed8;
 }
 
-/* Responsive */
-@media (max-width: 420px) {
+/* Responsive - Mobile Optimizations */
+@media (max-width: 768px) {
     .card {
-        padding: 20px;
+        padding: 24px 20px;
+        max-width: 100%;
+    }
+    
+    h1 {
+        font-size: 18px;
+    }
+    
+    p.lead {
+        font-size: 13px;
+    }
+    
+    .row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+    
+    button.secondary {
+        align-self: flex-start;
+    }
+}
+
+@media (max-width: 480px) {
+    .card {
+        padding: 20px 16px;
+    }
+    
+    h1 {
+        font-size: 16px;
+    }
+    
+    input[type="email"],
+    input[type="password"],
+    input[type="text"] {
+        font-size: 16px; /* Prevents zoom on iOS */
+    }
+    
+    .input,
+    .input-password {
+        padding: 12px;
+    }
+    
+    .pw-toggle {
+        padding: 6px 10px;
+        font-size: 12px;
+    }
+    
+    button.primary {
+        padding: 14px 12px;
+        font-size: 16px;
+    }
+}
+
+/* Mobile landscape */
+@media (max-height: 600px) and (orientation: landscape) {
+    .card {
+        padding: 16px;
+        margin: 8px 0;
+    }
+    
+    h1 {
+        margin-bottom: 4px;
+    }
+    
+    p.lead {
+        margin-bottom: 12px;
+    }
+    
+    form {
+        gap: 8px;
+    }
+}
+
+/* Tablet optimizations */
+@media (min-width: 481px) and (max-width: 768px) {
+    .card {
+        max-width: 460px;
+        padding: 28px 24px;
+    }
+}
+
+/* Touch-friendly improvements */
+@media (hover: none) and (pointer: coarse) {
+    button.primary,
+    button.secondary,
+    .checkbox,
+    .pw-toggle {
+        min-height: 44px;
+        min-width: 44px;
+    }
+    
+    .checkbox input[type="checkbox"] {
+        width: 20px;
+        height: 20px;
+    }
+    
+    input {
+        font-size: 16px !important; /* Prevent zoom on focus */
     }
 }

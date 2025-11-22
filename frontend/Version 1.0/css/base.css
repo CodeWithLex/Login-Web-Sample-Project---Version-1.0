@@ -110,15 +110,49 @@ body::before {
     margin-top: 10px;
 }
 
-/* Responsive */
-@media (max-width: 420px) {
-    .bg-text {
-        font-size: 1.8rem;
-        letter-spacing: 1px;
-        margin-bottom: 20px;
+/* Responsive - Mobile First Approach */
+@media (max-width: 768px) {
+    body {
+        padding: 16px;
     }
     
+    .bg-text {
+        font-size: 1.5rem;
+        letter-spacing: 0.5px;
+        margin-bottom: 20px;
+        word-wrap: break-word;
+        white-space: normal;
+    }
+}
+
+@media (max-width: 480px) {
     body {
-        padding-top: 24px;
+        padding: 12px;
+    }
+    
+    .bg-text {
+        font-size: 1.2rem;
+        margin-bottom: 16px;
+    }
+}
+
+/* Mobile landscape */
+@media (max-height: 600px) and (orientation: landscape) {
+    body {
+        padding: 12px;
+        justify-content: flex-start;
+    }
+    
+    .bg-text {
+        font-size: 1.2rem;
+        margin-bottom: 12px;
+    }
+}
+
+/* Touch device optimizations */
+@media (hover: none) and (pointer: coarse) {
+    /* Better tap targets for mobile */
+    button, a, input, select, textarea {
+        min-height: 44px; /* iOS accessibility guideline */
     }
 }

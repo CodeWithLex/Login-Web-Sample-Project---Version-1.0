@@ -2,7 +2,10 @@
 <html lang="en">
 <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <title>Welcome - Sample Project</title>
     <link rel="stylesheet" href="css/base.css" />
     <style>
@@ -159,14 +162,15 @@
             animation: fadeIn 1s ease-out 1.4s both;
         }
 
-        /* Responsive */
-        @media (max-width: 420px) {
+        /* Responsive - Mobile Optimizations */
+        @media (max-width: 768px) {
             .welcome-card {
-                padding: 30px 20px;
+                padding: 32px 24px;
             }
             
             .welcome-title {
-                font-size: 1.5rem;
+                font-size: 1.6rem;
+                line-height: 1.3;
             }
             
             .welcome-subtitle {
@@ -174,7 +178,86 @@
             }
 
             .creator-text {
+                font-size: 0.9rem;
+                margin-bottom: 28px;
+            }
+            
+            .loading-spinner {
+                width: 50px;
+                height: 50px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .welcome-card {
+                padding: 24px 16px;
+            }
+            
+            .welcome-title {
+                font-size: 1.3rem;
+                margin-bottom: 12px;
+            }
+            
+            .welcome-subtitle {
+                font-size: 0.9rem;
+                margin-bottom: 8px;
+            }
+
+            .creator-text {
+                font-size: 0.8rem;
+                margin-bottom: 24px;
+                line-height: 1.4;
+            }
+            
+            .loading-spinner {
+                width: 45px;
+                height: 45px;
+                margin-bottom: 20px;
+            }
+            
+            .dot {
+                width: 10px;
+                height: 10px;
+            }
+            
+            .progress-container {
+                height: 6px;
+            }
+        }
+
+        /* Mobile landscape */
+        @media (max-height: 600px) and (orientation: landscape) {
+            .welcome-card {
+                padding: 20px 16px;
+            }
+            
+            .welcome-title {
+                font-size: 1.2rem;
+                margin-bottom: 8px;
+            }
+            
+            .welcome-subtitle {
                 font-size: 0.85rem;
+                margin-bottom: 6px;
+            }
+            
+            .creator-text {
+                font-size: 0.75rem;
+                margin-bottom: 16px;
+            }
+            
+            .loading-spinner {
+                width: 40px;
+                height: 40px;
+                margin-bottom: 12px;
+            }
+            
+            .loading-dots {
+                margin-bottom: 12px;
+            }
+            
+            .progress-container {
+                margin-top: 16px;
             }
         }
     </style>

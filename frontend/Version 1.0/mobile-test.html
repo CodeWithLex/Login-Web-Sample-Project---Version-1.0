@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mobile Test - Sample Project</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+        
+        h1 {
+            color: #1e293b;
+            margin-bottom: 8px;
+            font-size: 24px;
+        }
+        
+        p {
+            color: #64748b;
+            margin-bottom: 24px;
+            font-size: 14px;
+        }
+        
+        .info-grid {
+            display: grid;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+        
+        .info-item {
+            background: #f1f5f9;
+            padding: 12px 16px;
+            border-radius: 8px;
+            border-left: 4px solid #3b82f6;
+        }
+        
+        .info-label {
+            font-size: 12px;
+            color: #64748b;
+            font-weight: 600;
+            text-transform: uppercase;
+            margin-bottom: 4px;
+        }
+        
+        .info-value {
+            font-size: 16px;
+            color: #1e293b;
+            font-weight: 600;
+        }
+        
+        .status {
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 600;
+            display: inline-block;
+            margin-bottom: 16px;
+        }
+        
+        .status.success {
+            background: #dcfce7;
+            color: #166534;
+        }
+        
+        .status.warning {
+            background: #fef3c7;
+            color: #92400e;
+        }
+        
+        .button-group {
+            display: grid;
+            gap: 12px;
+            margin-top: 24px;
+        }
+        
+        .btn {
+            padding: 14px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            text-align: center;
+            display: block;
+        }
+        
+        .btn-primary {
+            background: #3b82f6;
+            color: white;
+        }
+        
+        .btn-primary:active {
+            transform: scale(0.98);
+            background: #2563eb;
+        }
+        
+        .btn-secondary {
+            background: #f1f5f9;
+            color: #1e293b;
+        }
+        
+        .btn-secondary:active {
+            transform: scale(0.98);
+            background: #e2e8f0;
+        }
+        
+        .feature-list {
+            list-style: none;
+            margin: 16px 0;
+        }
+        
+        .feature-list li {
+            padding: 8px 0;
+            color: #475569;
+            font-size: 14px;
+        }
+        
+        .feature-list li::before {
+            content: "✓ ";
+            color: #10b981;
+            font-weight: bold;
+            margin-right: 8px;
+        }
+        
+        @media (max-width: 480px) {
+            .container {
+                padding: 20px 16px;
+            }
+            
+            h1 {
+                font-size: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📱 Mobile Compatibility Test</h1>
+        <p>Check if your device is compatible with the login system</p>
+        
+        <div id="status"></div>
+        
+        <div class="info-grid">
+            <div class="info-item">
+                <div class="info-label">Screen Width</div>
+                <div class="info-value" id="screenWidth">-</div>
+            </div>
+            <div class="info-item">
+                <div class="info-label">Screen Height</div>
+                <div class="info-value" id="screenHeight">-</div>
+            </div>
+            <div class="info-item">
+                <div class="info-label">Device Type</div>
+                <div class="info-value" id="deviceType">-</div>
+            </div>
+            <div class="info-item">
+                <div class="info-label">Orientation</div>
+                <div class="info-value" id="orientation">-</div>
+            </div>
+            <div class="info-item">
+                <div class="info-label">Touch Support</div>
+                <div class="info-value" id="touchSupport">-</div>
+            </div>
+            <div class="info-item">
+                <div class="info-label">Browser</div>
+                <div class="info-value" id="browser">-</div>
+            </div>
+        </div>
+        
+        <h3 style="margin: 24px 0 12px 0; color: #1e293b; font-size: 16px;">✨ Features Available:</h3>
+        <ul class="feature-list" id="features"></ul>
+        
+        <div class="button-group">
+            <a href="welcome.html" class="btn btn-primary">Go to Welcome Page</a>
+            <a href="index.html" class="btn btn-secondary">Go to Login Page</a>
+            <button class="btn btn-secondary" onclick="location.reload()">Refresh Test</button>
+        </div>
+    </div>
+    
+    <script>
+        function detectDevice() {
+            const width = window.innerWidth;
+            const height = window.innerHeight;
+            const hasTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+            const orientation = width > height ? 'Landscape' : 'Portrait';
+            
+            // Device type
+            let deviceType = 'Desktop';
+            if (width < 480) deviceType = 'Mobile Phone';
+            else if (width < 768) deviceType = 'Tablet';
+            else if (hasTouch) deviceType = 'Touch Device';
+            
+            // Browser detection
+            const ua = navigator.userAgent;
+            let browser = 'Unknown';
+            if (ua.includes('Chrome') && !ua.includes('Edge')) browser = 'Chrome';
+            else if (ua.includes('Safari') && !ua.includes('Chrome')) browser = 'Safari';
+            else if (ua.includes('Firefox')) browser = 'Firefox';
+            else if (ua.includes('Edge')) browser = 'Edge';
+            else if (ua.includes('Opera')) browser = 'Opera';
+            
+            // Update display
+            document.getElementById('screenWidth').textContent = width + 'px';
+            document.getElementById('screenHeight').textContent = height + 'px';
+            document.getElementById('deviceType').textContent = deviceType;
+            document.getElementById('orientation').textContent = orientation;
+            document.getElementById('touchSupport').textContent = hasTouch ? 'Yes ✓' : 'No (Mouse)';
+            document.getElementById('browser').textContent = browser;
+            
+            // Status
+            const statusDiv = document.getElementById('status');
+            if (width >= 320) {
+                statusDiv.innerHTML = '<div class="status success">✓ Your device is fully compatible!</div>';
+            } else {
+                statusDiv.innerHTML = '<div class="status warning">⚠ Screen too small (minimum 320px)</div>';
+            }
+            
+            // Features
+            const features = [
+                'Responsive Design',
+                'Touch-Friendly Interface',
+                'Animated Gradient Background',
+                'Form Validation',
+                'Password Show/Hide Toggle',
+                'Loading Animations',
+                'Cross-Platform Support'
+            ];
+            
+            const featuresEl = document.getElementById('features');
+            featuresEl.innerHTML = features.map(f => `<li>${f}</li>`).join('');
+        }
+        
+        // Initial detection
+        detectDevice();
+        
+        // Update on resize/orientation change
+        window.addEventListener('resize', detectDevice);
+        window.addEventListener('orientationchange', () => {
+            setTimeout(detectDevice, 100);
+        });
+    </script>
+</body>
+</html>
