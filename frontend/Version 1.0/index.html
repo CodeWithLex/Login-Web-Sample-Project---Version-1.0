@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Sample Login Form</title>
+    <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+    <div class="bg-text">My Sample Project - Testing Database</div>
+    <main class="card" role="main"> 
+        <h1>Sign in to your account</h1>
+        <p class="lead">Enter your email and password to continue</p>
+
+        <form id="loginForm" novalidate>
+            <div>
+                <label for="email">Email</label>
+                <div class="input">
+                    <input type="email" id="email" placeholder="you@example.com" required />
+                </div>
+                <div id="emailError" class="error"></div>
+            </div>
+
+            <div>
+                <label for="password">Password</label>
+                <div class="input-password">
+                    <input type="password" id="password" placeholder="Enter your password" required />
+                    <button type="button" class="pw-toggle" id="togglePwd" title="Show password">Show</button>
+                </div>
+                <div id="passwordError" class="error"></div>
+            </div>
+
+            <div class="row">
+                <label class="checkbox">
+                    <input type="checkbox" id="remember" />
+                    <span>Remember me</span>
+                </label>
+                <button type="button" class="secondary">Forgot?</button>
+            </div>
+
+            <button type="submit" class="primary">Sign in</button>
+            <div id="result" class="helper"></div>
+        </form>
+
+        <p class="text-center muted">
+            New here? <button type="button" class="secondary">Create account</button>
+        </p>
+    </main>
+
+    <script>
+        const form = document.getElementById('loginForm');
+        const email = document.getElementById('email');
+        let pwd = document.getElementById('password');
+        const emailError = document.getElementById('emailError');
+        const pwdError = document.getElementById('passwordError');
+        const result = document.getElementById('result');
+        const toggle = document.getElementById('togglePwd');
+
+        let isHidden = true;
+
+        // Toggle password visibility
+        toggle.addEventListener('click', () => {
+            const start = pwd.selectionStart;
+            const end = pwd.selectionEnd;
+            const newType = isHidden ? 'text' : 'password';
+            
+            const newInput = document.createElement('input');
+            newInput.type = newType;
+            newInput.id = 'password';
+            newInput.placeholder = 'Enter your password';
+            newInput.value = pwd.value;
+            newInput.required = true;
+            
+            pwd.parentNode.replaceChild(newInput, pwd);
+            pwd = newInput;
+            pwd.setSelectionRange(start, end);
+            pwd.focus();
+            
+            isHidden = !isHidden;
+            toggle.textContent = isHidden ? 'Show' : 'Hide';
+            toggle.title = isHidden ? 'Show password' : 'Hide password';
+        });
+
+        function validateEmailField() {
+            const val = email.value.trim();
+            if (!val) {
+                emailError.textContent = 'Email is required.';
+                return false;
+            }
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(val)) {
+                emailError.textContent = 'Please enter a valid email.';
+                return false;
+            }
+            emailError.textContent = '';
+            return true;
+        }
+
+        function validatePasswordField() {
+            const val = pwd.value;
+            if (!val) {
+                pwdError.textContent = 'Password is required.';
+                return false;
+            }
+            if (val.length < 6) {
+                pwdError.textContent = 'Password must be at least 6 characters.';
+                return false;
+            }
+            pwdError.textContent = '';
+            return true;
+        }
+
+        email.addEventListener('input', () => { 
+            emailError.textContent = ''; 
+            result.textContent = ''; 
+        });
+        
+        pwd.addEventListener('input', () => { 
+            pwdError.textContent = ''; 
+            result.textContent = ''; 
+        });
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            result.textContent = '';
+            
+            const okEmail = validateEmailField();
+            const okPwd = validatePasswordField();
+            
+            if (!okEmail || !okPwd) {
+                result.textContent = 'Please fix the errors above.';
+                result.style.color = 'red';
+                return;
+            }
+
+            const data = {
+                email: email.value.trim(),
+                password: pwd.value,
+                remember: document.getElementById('remember').checked
+            };
+
+            result.textContent = 'Signing in...';
+            result.style.color = '#64748b';
+
+            try {
+                const response = await fetch('http://localhost:8081/login-backend/api/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                const responseData = await response.json();
+
+                if (responseData.success) {
+                    result.textContent = `Welcome, ${responseData.email}!`;
+                    result.style.color = 'green';
+                    
+                    // Redirect to dashboard
+                    setTimeout(() => {
+                        window.location.href = `dashboard.html?email=${encodeURIComponent(responseData.email)}`;
+                    }, 1000);
+                } else {
+                    result.textContent = responseData.message;
+                    result.style.color = 'red';
+                }
+            } catch (error) {
+                result.textContent = 'Connection error. Make sure the server is running.';
+                result.style.color = 'red';
+                console.error('Error:', error);
+            }
+        });
+    </script>
+</body>
+</html>

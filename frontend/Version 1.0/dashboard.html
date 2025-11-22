@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .dashboard {
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 40px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+        
+        .dashboard h1 {
+            color: #1e293b;
+            margin-bottom: 20px;
+        }
+        
+        .logout-btn {
+            background: #ef4444;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            margin-top: 20px;
+        }
+        
+        .logout-btn:hover {
+            background: #dc2626;
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard">
+        <h1>Welcome to Dashboard!</h1>
+        <p>You are successfully logged in.</p>
+        <p id="userEmail"></p>
+        <button class="logout-btn" onclick="logout()">Logout</button>
+    </div>
+
+    <script>
+        // Check if user is logged in
+        const urlParams = new URLSearchParams(window.location.search);
+        const email = urlParams.get('email') || sessionStorage.getItem('userEmail');
+        
+        if (email) {
+            document.getElementById('userEmail').textContent = `Logged in as: ${email}`;
+            sessionStorage.setItem('userEmail', email);
+        } else {
+            window.location.href = 'index.html';
+        }
+
+        function logout() {
+            sessionStorage.removeItem('userEmail');
+            window.location.href = 'index.html';
+        }
+    </script>
+</body>
+</html>
